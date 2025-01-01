@@ -16,6 +16,6 @@ app.use(cors());
 app.get('/',(req,res)=>res.send('Hi World'))
 app.use('/api/auth',authRoutes);
 app.use('/api/user',userRoutes);
-app.use('/api/post',postRoutes);
+app.use('/api/posts',postRoutes);
 
 app.listen(PORT,()=> console.log(`App listening on PORT ${PORT}`));
