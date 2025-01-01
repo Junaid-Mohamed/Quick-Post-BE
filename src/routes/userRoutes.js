@@ -1,6 +1,6 @@
 import express from "express";
 
-import { verifySignIn } from "../controllers/authontroller.js";
+import { verifySignIn } from "../controllers/authController.js";
 import { deleteUserPostById, getAllUsers, getBookmarkedPosts, getSecondaryUser, getUserById, getUserPosts, updateFollow, updatePostWithBookmark, updateUserPostById, updateUserProfile } from "../controllers/userController.js";
 
 const router = express.Router();
