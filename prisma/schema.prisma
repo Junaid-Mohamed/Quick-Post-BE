@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,41 +13,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Follows {
-  followerId                     String
-  followingId                    String
-  User_Follows_followerIdToUser  User   @relation("Follows_followerIdToUser", fields: [followerId], references: [id])
-  User_Follows_followingIdToUser User   @relation("Follows_followingIdToUser", fields: [followingId], references: [id])
+model User {
+  id              String  @id @default(cuid())
+  firstName       String
+  lastName        String?
+  email           String  @unique
+  profileImageURL String?
+  bio             String?
+  //  for passowrd bsed login
+  password        String?
+  // stores the Google `sub` claim for OAuth users
+  googleId        String?
 
+  posts           Post[]
+  bookmarkedPosts Post[] @relation("BookmarkedPosts")
+
+  followers  Follows[] @relation("follower")
+  followings Follows[] @relation("following")
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
+
+model Follows {
+  follower   User   @relation("follower", fields: [followerId], references: [id])
+  followerId String
+
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  //  composite id
   @@id([followerId, followingId])
 }
 
 model Post {
-  id                       String   @id
-  content                  String
-  imageUrl                 String?
-  likes                    Int      @default(0)
-  authorId                 String
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime
-  resourceType             String?
-  User_Post_authorIdToUser User     @relation("Post_authorIdToUser", fields: [authorId], references: [id])
-  User_BookmarkedPosts     User[]   @relation("BookmarkedPosts")
-}
+  id           String  @id @default(cuid())
+  content      String
+  imageUrl     String?
+  resourceType String? // image or video
+  likes        Int     @default(0)
+  author       User    @relation(fields: [authorId], references: [id])
+  authorId     String
 
-model User {
-  id                                String    @id
-  email                             String    @unique
-  firstName                         String
-  lastName                          String?
-  createAt                          DateTime  @default(now())
-  profileImageURL                   String?
-  updateAt                          DateTime
-  googleId                          String?
-  password                          String?
-  bio                               String?
-  Follows_Follows_followerIdToUser  Follows[] @relation("Follows_followerIdToUser")
-  Follows_Follows_followingIdToUser Follows[] @relation("Follows_followingIdToUser")
-  Post_Post_authorIdToUser          Post[]    @relation("Post_authorIdToUser")
-  Post_BookmarkedPosts              Post[]    @relation("BookmarkedPosts")
+  bookmarkedBy User[]   @relation("BookmarkedPosts")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
