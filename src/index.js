@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import authRoutes from "./routes/authRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
@@ -15,5 +16,6 @@ app.use(cors());
 app.get('/',(req,res)=>res.send('Hi World'))
 app.use('/api/auth',authRoutes);
 app.use('/api/user',userRoutes);
+app.use('/api/post',postRoutes);
 
 app.listen(PORT,()=> console.log(`App listening on PORT ${PORT}`));
