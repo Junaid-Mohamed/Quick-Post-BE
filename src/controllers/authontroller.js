@@ -1,7 +1,7 @@
 import axios from "axios";
 import bcrypt from "bcrypt";
-import { prismaClient } from "../clients/db";
-import JWTService from "../services/jwt";
+import { prismaClient } from "../clients/db/index.js";
+import JWTService from "../services/jwt.js";
 
 const verifyEmailAndPassword = async ({email,password})=>{
     const user = await prismaClient.user.findUnique({
