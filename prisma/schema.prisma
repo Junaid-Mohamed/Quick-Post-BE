@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,43 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Follows {
+  followerId                     String
+  followingId                    String
+  User_Follows_followerIdToUser  User   @relation("Follows_followerIdToUser", fields: [followerId], references: [id])
+  User_Follows_followingIdToUser User   @relation("Follows_followingIdToUser", fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+}
+
+model Post {
+  id                       String   @id
+  content                  String
+  imageUrl                 String?
+  likes                    Int      @default(0)
+  authorId                 String
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime
+  resourceType             String?
+  User_Post_authorIdToUser User     @relation("Post_authorIdToUser", fields: [authorId], references: [id])
+  User_BookmarkedPosts     User[]   @relation("BookmarkedPosts")
+}
+
+model User {
+  id                                String    @id
+  email                             String    @unique
+  firstName                         String
+  lastName                          String?
+  createAt                          DateTime  @default(now())
+  profileImageURL                   String?
+  updateAt                          DateTime
+  googleId                          String?
+  password                          String?
+  bio                               String?
+  Follows_Follows_followerIdToUser  Follows[] @relation("Follows_followerIdToUser")
+  Follows_Follows_followingIdToUser Follows[] @relation("Follows_followingIdToUser")
+  Post_Post_authorIdToUser          Post[]    @relation("Post_authorIdToUser")
+  Post_BookmarkedPosts              Post[]    @relation("BookmarkedPosts")
 }
