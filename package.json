@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate",
+    "start": "cd src && node index",
     "dev": "cd src && npx nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
